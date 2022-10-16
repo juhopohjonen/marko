@@ -5,7 +5,7 @@ import wikipediaapi as wpa
 import markovify
 
 app = FastAPI()
-origins_to_allow = ["http://localhost:3000"]
+origins_to_allow = ["http://localhost:3000", "https://essee.tk", "https://www.essee.tk", "http://essee.tk", "http://www.essee.tk"]
 
 app.add_middleware(
     CORSMiddleware,
