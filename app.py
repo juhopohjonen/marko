@@ -5,6 +5,8 @@ from fastapi.staticfiles import StaticFiles
 import wikipediaapi as wpa
 import markovify
 
+from typing import Union
+
 app = FastAPI()
 origins_to_allow = ["http://localhost:3000", "https://essee.tk", "https://www.essee.tk", "http://essee.tk", "http://www.essee.tk"]
 
@@ -20,10 +22,17 @@ app.mount('/static', StaticFiles(directory='static'), name='static')
 
 import random
 
-wiki = wpa.Wikipedia('fi')
+default_wiki = wpa.Wikipedia('fi')
+other_accepted_wikis = ['en']
 
 @app.get('/api/marko/{article}')
-def fetch_wiki(article: str):
+def fetch_wiki(article: str, lang: Union[str, None] = None):
+    
+    if lang in other_accepted_wikis:
+        wiki = wpa.Wikipedia(lang)
+    else:
+        wiki = default_wiki
+
     try:
         page = wiki.page(article)
     except:
