@@ -22,8 +22,10 @@ app.mount('/static', StaticFiles(directory='static'), name='static')
 
 import random
 
-default_wiki = wpa.Wikipedia('fi')
-other_accepted_wikis = ['en']
+default_wiki_code = 'fi'
+other_accepted_wikis = ['en', 'sv']
+
+default_wiki = wpa.Wikipedia(default_wiki_code)
 
 @app.get('/api/marko/{article}')
 def fetch_wiki(article: str, lang: Union[str, None] = None):
@@ -52,3 +54,13 @@ def fetch_wiki(article: str, lang: Union[str, None] = None):
             sentences.append(sentence)
 
     return sentences
+
+@app.get('/api/wiki')
+def getWikis():
+    wiki_list = []
+
+    wiki_list.append(default_wiki_code)
+    for code in other_accepted_wikis:
+        wiki_list.append(code)
+
+    return wiki_list
