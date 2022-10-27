@@ -24,6 +24,8 @@ import random
 
 default_wiki_code = 'fi'
 other_accepted_wikis = ['en', 'sv']
+code_definitions = [{ 'code': 'en', 'name': 'Englanti' }, { 'code': 'fi', 'name': 'Suomi' }, { 'code': 'sv', 'name': 'Ruotsi' }]
+
 
 default_wiki = wpa.Wikipedia(default_wiki_code)
 
@@ -63,4 +65,10 @@ def getWikis():
     for code in other_accepted_wikis:
         wiki_list.append(code)
 
-    return wiki_list
+    
+    content = {
+        'wikis': wiki_list,
+        'definitions': code_definitions
+    }
+
+    return content
