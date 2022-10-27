@@ -24,8 +24,7 @@ import random
 
 default_wiki_code = 'fi'
 other_accepted_wikis = ['en', 'sv', 'de']
-code_definitions = [{ 'code': 'en', 'name': 'Englanti' }, { 'code': 'fi', 'name': 'Suomi' }, { 'code': 'sv', 'name': 'Ruotsi' },
-{ 'code': 'de', 'name': 'Saksa' }]
+code_definitions = [{ 'code': 'en', 'name': 'Englanti' }, { 'code': 'fi', 'name': 'Suomi' }, { 'code': 'sv', 'name': 'Ruotsi' }]
 
 
 default_wiki = wpa.Wikipedia(default_wiki_code)
