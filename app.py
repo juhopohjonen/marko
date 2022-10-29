@@ -28,10 +28,15 @@ code_definitions = [{ 'code': 'en', 'name': 'Englanti' }, { 'code': 'fi', 'name'
 
 
 default_wiki = wpa.Wikipedia(default_wiki_code)
+default_state_size = 2
 
 @app.get('/api/marko/{article}')
-def fetch_wiki(article: str, lang: Union[str, None] = None):
+def fetch_wiki(article: str, lang: Union[str, None] = None, accuracy: int = default_state_size):
+    # state size based on accuracy val
+    if accuracy < 1 or accuracy > 5:
+        accuracy = default_state_size
     
+
     if lang in other_accepted_wikis:
         wiki = wpa.Wikipedia(lang)
     else:
@@ -47,7 +52,7 @@ def fetch_wiki(article: str, lang: Union[str, None] = None):
         raise HTTPException(status_code=404, detail="Not found wiki")
     
     text = page.text.split('\n')
-    text_model = markovify.Text(text)
+    text_model = markovify.Text(text, state_size=accuracy)
 
     sentences = []
     for i in range(30):
