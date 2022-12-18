@@ -2,10 +2,24 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from pydantic import BaseModel
+
 import wikipediaapi as wpa
 import markovify
 
 from typing import Union
+
+import os
+import openai
+
+from dotenv import load_dotenv
+
+
+dev = True
+if dev:
+    load_dotenv()
+    
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
 origins_to_allow = ["http://localhost:3000", "https://essee.tk", "https://www.essee.tk", "http://essee.tk", "http://www.essee.tk"]
@@ -77,3 +91,32 @@ def getWikis():
     }
 
     return content
+
+class Completion(BaseModel):
+    query: str
+
+@app.post('/api/ai/completion')
+def complete(completion: Completion):
+    if not completion:
+        raise HTTPException(status_code=404, detail='No completion')
+
+    moderation_res = openai.Moderation.create(input=completion.query)
+    isFlagged = moderation_res.results[0].flagged
+
+    print(moderation_res)
+    
+    if isFlagged:
+        raise HTTPException(status_code=422, detail='TOS error')
+
+    resreq = openai.Completion.create(engine="text-davinci-003", prompt=completion.query, temperature=0.9, max_tokens=2000)
+    response = resreq.choices[0].text
+
+    return response
+
+
+@app.get('/api/ai/models')
+def models():
+    engines = openai.Engine.list()
+    print(engines.data)
+
+    return engines.data
