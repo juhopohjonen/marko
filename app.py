@@ -15,7 +15,7 @@ import openai
 from dotenv import load_dotenv
 
 
-dev = True
+dev = False
 if dev:
     load_dotenv()
     
