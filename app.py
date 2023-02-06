@@ -95,6 +95,7 @@ def getWikis():
 class Completion(BaseModel):
     query: str
 
+
 @app.post('/api/ai/completion')
 def complete(completion: Completion):
     if not completion:
@@ -111,7 +112,11 @@ def complete(completion: Completion):
     resreq = openai.Completion.create(engine="text-davinci-003", prompt=completion.query, temperature=0.9, max_tokens=2000)
     response = resreq.choices[0].text
 
-    return response
+    respObj = {
+        "response": response
+    }
+
+    return respObj
 
 
 @app.get('/api/ai/models')
@@ -120,3 +125,22 @@ def models():
     print(engines.data)
 
     return engines.data
+
+
+@app.post('/api/ai/image')
+def generate(completion: Completion):
+
+    if not completion:
+        raise HTTPException(status_code=404, detail='No completion')
+
+    res = openai.Image.create(
+        prompt=completion.query,
+        n=1,
+        size="1024x1024"
+    )
+
+    imgUrl = res['data'][0]['url']
+    respObj = {
+        "url": imgUrl
+    }
+    return respObj
